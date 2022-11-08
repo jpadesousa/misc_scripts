@@ -1,0 +1,48 @@
+
+library(gplots)
+library(RColorBrewer)
+
+setwd("/Users/meyennf/Desktop/Imprints/")
+
+filenameRAW <- "ImprintingMouse.txt"
+Imprints <- read.csv(filenameRAW,sep="\t",header=TRUE,skip=0,fill=TRUE,dec = ".")
+
+Imprints <- Imprints[,c(2,1,3:10,12,11,13:ncol(Imprints))]
+names(Imprints) <- c("Imprint","Origin","mSperm","mOocyte","mICM","mESC naive","mEpiblast E6.5","mEpiLC d2",
+                  "mPGCLC d4","mPGCLC d6","mPGC E9.5","mPGC E10.5","mPGC E11.5","mPGC E13.5")
+
+
+
+data <- na.omit(Imprints)
+mat_data <- data.matrix(data[,3:ncol(data)])  # transform column 2-5 into a matrix
+rownames(mat_data) <- data[,1]                # assign row (Gene) names
+
+
+pdf ("Mouse Imprints.pdf", width = 10, height = 10, useDingbats=FALSE,colormodel='rgb')
+
+par(cex.lab=1, cex.axis=0.7, cex.sub=0.5, mar=c(5,5,3,3))
+
+heatmap.2(mat_data,
+          main = paste("Correlation in"), # heat map title
+          density="none",  # turns off density plot inside color legend
+          trace="none",         # turns off trace lines inside the heat map
+          margins = c(8,8),     # widens margins around plot
+          col = colorRampPalette(c(" dark blue","light yellow", " red"))(n = 100),  # use an color palette defined earlier
+          dendrogram = "row",     # only draw a row or col dendrogram
+ #         scale = "col",
+          Colv=F,Rowv=T,
+#          RowSideColors = RowColorLabels,
+ #         ColSideColors = ColColorLabels,
+ #         hclustfun = hclustfunc,distfun = distfunc,
+          srtCol=45,cexCol=0.7,offsetCol=-0.5)            
+
+
+
+
+
+#legend("bottomright", legend = names(Input)[-1],        col = cols, lty= 1, lwd = 5, cex=0.5)          
+
+
+dev.off()
+
+
